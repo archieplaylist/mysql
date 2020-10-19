@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM ubuntu:xenial
 
 MAINTAINER James Bacon james@baconi.co.uk
 
