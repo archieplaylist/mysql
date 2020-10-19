@@ -1,0 +1,11 @@
+version: '2'
+services:
+  mysql:
+    image: beercan1989/arm-mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: identity
+      MYSQL_USER: identity
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
