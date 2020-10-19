@@ -8,7 +8,7 @@ USER root
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 ## Set the mysql version to install
-ENV MYSQL_MAJOR 5.7.31
+ENV MYSQL_MAJOR 5
 
 ## Upload MySQL install script
 COPY install-mysql.bash /opt/docker-arm-mysql/
