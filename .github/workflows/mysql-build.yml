@@ -20,7 +20,7 @@ jobs:
       - name: build the image mysql
         run: |
           docker buildx build --push \
-            --tag mariotani25/mysql:latest \
+            --tag mariotani25/mysql:arm \
             --platform linux/arm/v7 -f Dockerfile .
 
       # - name: build the image mysql
