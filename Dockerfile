@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM arm32v7/ubuntu:xenial
 
 MAINTAINER James Bacon james@baconi.co.uk
 

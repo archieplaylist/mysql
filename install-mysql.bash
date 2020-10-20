@@ -9,11 +9,11 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 
 ## Update the apt lists
 apt-get update
+apt-get upgrade -y
 
-
-apt purge mysql-client-5.7 mysql-client-core-5.7 mysql-common mysql-server-5.7 mysql-server-core-5.7 mysql-server
-apt update && sudo apt upgrade -y  && \
-     apt autoremove && apt -f install -y
+# apt purge mysql-client-5.7 mysql-client-core-5.7 mysql-common mysql-server-5.7 mysql-server-core-5.7 mysql-server
+# apt update && sudo apt upgrade -y  && \
+#      apt autoremove && apt -f install -y
 
 
 ## Install MySQL
