@@ -14,19 +14,19 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 COPY install-mysql.bash /opt/docker-arm-mysql/
 
 ## Install MySQL
-RUN /opt/docker-arm-mysql/install-mysql.bash
+RUN bash /opt/docker-arm-mysql/install-mysql.bash
 
 ## Upload MySQL configuration for docker script
 COPY configure-mysql-for-docker.bash /opt/docker-arm-mysql/
 
 ## Run MySQL configuration for docker script
-RUN /opt/docker-arm-mysql/configure-mysql-for-docker.bash
+RUN bash /opt/docker-arm-mysql/configure-mysql-for-docker.bash
 
 ## Upload script to initialise MySQL
 COPY initialise-mysql-insecure.bash /opt/docker-arm-mysql/
 
 ## Run script to initialize MySQL
-RUN /opt/docker-arm-mysql/initialise-mysql-insecure.bash
+RUN bash /opt/docker-arm-mysql/initialise-mysql-insecure.bash
 
 ## Setup MySQL data directory as a volume
 VOLUME /var/lib/mysql
