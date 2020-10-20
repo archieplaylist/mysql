@@ -17,8 +17,8 @@ apt-get upgrade -y
 
 
 ## Install MySQL
-apt-get install -y mysql-server tzdata
-# apt-get install -y mysql-server-${MYSQL_MAJOR} tzdata
+# apt-get install -y mysql-server tzdata
+apt-get install -y mysql-server-${MYSQL_MAJOR} tzdata
 
 ## Clean up any mess
 apt-get clean autoclean

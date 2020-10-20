@@ -2,13 +2,13 @@ FROM arm32v7/ubuntu:xenial
 
 MAINTAINER James Bacon james@baconi.co.uk
 
-# USER root
+USER root
 
 ## Create mysql user early to keep UID/GUID consistent
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 ## Set the mysql version to install
-# ENV MYSQL_MAJOR 5.7
+ENV MYSQL_MAJOR 5.7
 
 ## Upload MySQL install script
 COPY install-mysql.bash /opt/docker-arm-mysql/
