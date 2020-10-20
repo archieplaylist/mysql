@@ -2,7 +2,7 @@ FROM ubuntu:xenial
 
 MAINTAINER James Bacon james@baconi.co.uk
 
-USER root
+# USER root
 
 ## Create mysql user early to keep UID/GUID consistent
 RUN groupadd -r mysql && useradd -r -g mysql mysql
