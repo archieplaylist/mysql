@@ -1,44 +1,38 @@
-FROM arm32v7/ubuntu:xenial
+# Pull base image
+ARG distro=sid
+FROM debian:$distro
+# FROM resin/rpi-raspbian:$distro
 
-MAINTAINER James Bacon james@baconi.co.uk
-
-USER root
-
-## Create mysql user early to keep UID/GUID consistent
+# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
-## Set the mysql version to install
-ENV MYSQL_MAJOR 5.7
+# FATAL ERROR: please install the following Perl modules before executing /usr/local/mysql/scripts/mysql_install_db:
+# File::Basename
+# File::Copy
+# Sys::Hostname
+# Data::Dumper
+RUN apt-get update && apt-get upgrade -y && apt-get install -y perl --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-## Upload MySQL install script
-COPY install-mysql.bash /opt/docker-arm-mysql/
+ENV MYSQL_VERSION 5.7
 
-## Install MySQL
-RUN bash /opt/docker-arm-mysql/install-mysql.bash
+# the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
+# also, we set debconf keys to make APT a little quieter
+RUN { \
+		echo mysql-server mysql-server/data-dir select ''; \
+		echo mysql-server mysql-server/root-pass password ''; \
+		echo mysql-server mysql-server/re-root-pass password ''; \
+		echo mysql-server mysql-server/remove-test-db select false; \
+	} | debconf-set-selections \
+	&& apt-get update && apt-get install -y mysql-server="${MYSQL_VERSION}"* && rm -rf /var/lib/apt/lists/* \
+	&& rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
 
-## Upload MySQL configuration for docker script
-COPY configure-mysql-for-docker.bash /opt/docker-arm-mysql/
+# comment out a few problematic configuration values
+RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
 
-## Run MySQL configuration for docker script
-RUN bash /opt/docker-arm-mysql/configure-mysql-for-docker.bash
-
-## Upload script to initialise MySQL
-COPY initialise-mysql-insecure.bash /opt/docker-arm-mysql/
-
-## Run script to initialize MySQL
-RUN bash /opt/docker-arm-mysql/initialise-mysql-insecure.bash
-
-## Setup MySQL data directory as a volume
 VOLUME /var/lib/mysql
 
-## Upload docker entrypoint script
-COPY docker-entrypoint.sh /opt/docker-arm-mysql/
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
 
-## Set the entrypoint script, used to configure depending on requirements.
-ENTRYPOINT ["/opt/docker-arm-mysql/docker-entrypoint.sh"]
-
-## Expose the MySQL port
 EXPOSE 3306
-
-## Set the default command to be the MySQL daemon
 CMD ["mysqld"]
